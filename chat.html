@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat con Dr. Irkes | Pinguino</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    
+    <script>
+        // --- CONFIGURACIÓN DE TAILWIND CSS CON LA PALETA PASTEL ---
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Paleta Pastel del proyecto Pinguino
+                        'pastel-pink': '#FFD1DC',   // Rosa Pastel (Principal)
+                        'soft-mint': '#B0E0E6',     // Menta Suave (Secundario)
+                        'light-lilac': '#E6E6FA',   // Lila Claro (Acento)
+                        'creamy-white': '#FAF0E6',  // Crema/Blanco (Base)
+                        'dark-text': '#333333',     // Texto oscuro
+                        
+                        // Colores de Ánimo para referencia rápida
+                        'mood-Excelente': '#7FFFD4', 
+                        'mood-Triste': '#ADD8E6', 
+                    },
+                    fontFamily: {
+                        sans: ['Varela Round', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'petal': '0 4px 15px rgba(255, 209, 220, 0.7)', // Sombra suave rosa
+                        'mint': '0 4px 15px rgba(176, 224, 230, 0.5)',  // Sombra suave menta
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Estilo general del cuerpo y fondo de flores sutiles */
+        body {
+            font-family: 'Varela Round', sans-serif;
+            background-color: var(--tw-colors-creamy-white); 
+            color: var(--tw-colors-dark-text);
+            /* Patrón Floral Sutil */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="10" cy="10" r="2" fill="%23E6E6FA" /><circle cx="50" cy="50" r="2" fill="%23E6E6FA" /><circle cx="90" cy="90" r="2" fill="%23E6E6FA" /><circle cx="10" cy="90" r="2" fill="%23E6E6FA" /><circle cx="90" cy="10" r="2" fill="%23E6E6FA" /></svg>');
+            background-size: 50px 50px;
+        }
+
+        /* Burbuja de Dr. Irkes (Menta) */
+        .chat-bubble-ai {
+            background-color: var(--tw-colors-soft-mint);
+            color: pink;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Burbuja del Usuario (Lila) */
+        .chat-bubble-user {
+            background-color: var(--tw-colors-light-lilac);
+            color: var(--tw-colors-dark-text);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilo para la barra de scroll (para que coincida con el tema) */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--tw-colors-pastel-pink);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: var(--tw-colors-creamy-white);
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-10 flex flex-col items-center">
+
+    <a href="index.html" class="self-start mb-4 text-soft-mint font-bold hover:underline">← Volver al inicio</a>
+
+    <header class="text-center mb-8">
+        <h1 class="text-4xl md:text-5xl font-bold text-pastel-pink tracking-wide shadow-petal p-3 rounded-xl bg-white/70">
+            💬 Conversando con el Dr. Irkes
+        </h1>
+        <p class="text-lg text-gray-500 mt-2">
+            Tu psicólogo virtual.
+        </p>
+    </header>
+
+    <div class="w-full max-w-5xl flex flex-col lg:flex-row gap-8">
+
+        <div class="lg:w-2/3 bg-white p-4 md:p-6 rounded-3xl shadow-petal border-4 border-pastel-pink flex flex-col h-[70vh] min-h-[500px]">
+            <h2 class="text-2xl font-bold text-soft-mint mb-4 border-b border-light-lilac pb-2">
+                Sesión Activa
+            </h2>
+
+            <div id="chatWindow" class="flex-grow overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+                </div>
+
+            <div class="mt-4 flex gap-2">
+                <input type="text" id="userInput" placeholder="Escribe cómo te sientes..."
+                        class="flex-grow p-3 bg-creamy-white text-dark-text rounded-xl border-2 border-light-lilac focus:border-soft-mint focus:ring-1 focus:ring-soft-mint outline-none transition duration-300">
+                <button id="sendButton"
+                        class="px-6 py-3 bg-pastel-pink text-white font-bold rounded-xl hover:bg-pink-400 transition duration-300 transform hover:scale-105 shadow-petal">
+                    Enviar
+                </button>
+            </div>
+            
+            <a href="diario.html" class="text-sm mt-3 text-pastel-pink hover:underline">
+                → Ir al Calendario de Ánimo
+            </a>
+        </div>
+
+        <div class="lg:w-1/3 bg-white p-4 md:p-6 rounded-3xl shadow-petal border-4 border-soft-mint flex flex-col">
+            <h2 class="text-2xl font-bold text-pastel-pink mb-4 border-b border-soft-mint pb-2">
+                Personalizar al Dr. Irkes
+            </h2>
+            <p class="text-gray-500 text-sm mb-4">
+                Define las palabras clave que activarán las respuestas. Usa punto y coma (;) para respuestas múltiples.
+            </p>
+
+            <label for="newQuestion" class="block text-sm font-medium text-soft-mint mb-1">Palabra Clave (Trigger):</label>
+            <input type="text" id="newQuestion" placeholder="Ej: estoy triste, o: ansiedad"
+                    class="mb-3 p-2 bg-creamy-white text-dark-text rounded-lg border border-light-lilac focus:border-pastel-pink outline-none text-sm">
+
+            <label for="newResponses" class="block text-sm font-medium text-soft-mint mb-1">Respuestas del Dr. Irkes (separadas por ;):</label>
+            <textarea id="newResponses" rows="3" placeholder="Ej: Oh no, lo siento. Cuéntame más.; ¿Hay algo específico que te lo está causando?"
+                        class="mb-4 p-2 bg-creamy-white text-dark-text rounded-lg border border-light-lilac focus:border-pastel-pink outline-none text-sm resize-none"></textarea>
+
+            <button id="saveQaButton"
+                    class="w-full py-3 bg-soft-mint text-white font-bold rounded-xl hover:bg-mint-400 transition duration-300 transform hover:scale-105 shadow-mint">
+                Guardar Respuesta 💾
+            </button>
+
+            <div class="mt-6">
+                <h3 class="text-lg font-bold text-pastel-pink mb-2">Respuestas Activas (<span id="qaCount">0</span>):</h3>
+                <ul id="qaList" class="text-sm space-y-1 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                    </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CHAT_WINDOW = document.getElementById('chatWindow');
+        const USER_INPUT = document.getElementById('userInput');
+        const SEND_BUTTON = document.getElementById('sendButton');
+        const SAVE_QA_BUTTON = document.getElementById('saveQaButton');
+        const NEW_QUESTION = document.getElementById('newQuestion');
+        const NEW_RESPONSES = document.getElementById('newResponses');
+        const QA_LIST = document.getElementById('qaList');
+        const QA_COUNT = document.getElementById('qaCount');
+        
+        // Claves de almacenamiento separadas
+        const CHAT_STORAGE_KEY = 'pinguino_drirkes_db'; 
+        const MOOD_STORAGE_KEY = 'pinguino_mood_data'; 
+        
+        const AI_NAME = 'Dr. Irkes';
+
+        let chatDatabase = [];
+
+        // Base de datos inicial y por defecto
+        const defaultDatabase = [
+            {
+                trigger: ["hola", "saludos", "que onda"],
+                responses: [
+                    "¡Hola! Qué gusto tenerte por aquí 😊. Dime, ¿qué tienes en mente?",
+                    "¡Bienvenida! Lista para escucharte, ¿cómo te sientes hoy?",
+                    "Hola. Soy tu apoyo virtual. ¿En qué podemos concentrarnos hoy?",
+                ]
+            },
+            {
+                trigger: ["como estas", "que tal"],
+                responses: [
+                    "¡Yo estoy genial! Siempre listo para apoyarte. ¿Y tú, cómo va tu día?",
+                    "Me siento estable. Gracias por preguntar. ¿Y tú qué tal?",
+                    "Funcionando al 100%. Cuéntame, ¿qué tal te ha ido?",
+                ]
+            },
+            {
+                trigger: ["estoy triste", "llorar", "deprimida"],
+                responses: [
+                    "Oh, lo siento mucho. Permítete sentir esa emoción. ¿Quieres hablar de algo en particular que te está pesando?",
+                    "Es valiente reconocer la tristeza. Aquí estoy para escucharte sin juicios. ¿Qué ocurrió?",
+                    "Un abrazo virtual. A veces el ánimo baja. Hablemos de eso, ¿qué te gustaría compartir primero?",
+                ]
+            },
+            {
+                trigger: ["ansiedad", "nerviosa", "estresada"],
+                responses: [
+                    "Siento esa presión. ¿Qué sientes en tu cuerpo en este momento? Si quieres, podemos hacer un ejercicio de respiración simple.",
+                    "Respira. Estás segura aquí. ¿Hay alguna preocupación que te está dando vueltas en la cabeza?",
+                    "La ansiedad es dura. ¿Te gustaría que revisemos alguna técnica para manejar la preocupación inmediata?",
+                ]
+            }
+        ];
+
+        // Función para cargar los datos de estado de ánimo del diario
+        function loadMoodData() {
+            try {
+                return JSON.parse(localStorage.getItem(MOOD_STORAGE_KEY)) || {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        // --- Funciones de Chat ---
+
+        function loadDatabase() {
+            const storedData = localStorage.getItem(CHAT_STORAGE_KEY);
+            if (storedData) {
+                chatDatabase = JSON.parse(storedData);
+            } else {
+                chatDatabase = defaultDatabase;
+                saveDatabase();
+            }
+            renderQaList();
+        }
+
+        function saveDatabase() {
+            localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatDatabase));
+            renderQaList();
+        }
+
+        function addMessage(sender, text) {
+            const messageElement = document.createElement('div');
+            const bubble = document.createElement('div');
+            
+            if (sender === 'user') {
+                messageElement.className = 'flex justify-end';
+                bubble.className = 'chat-bubble-user p-3 max-w-md rounded-tr-xl rounded-bl-xl rounded-tl-lg text-base';
+                bubble.innerHTML = `**Tú:** ${text}`;
+            } else { // ai
+                messageElement.className = 'flex justify-start';
+                bubble.className = 'chat-bubble-ai p-3 max-w-md rounded-tl-xl rounded-br-xl rounded-tr-lg text-base';
+                bubble.innerHTML = `**${AI_NAME}:** ${text}`;
+            }
+            
+            messageElement.appendChild(bubble);
+            CHAT_WINDOW.appendChild(messageElement);
+            
+            CHAT_WINDOW.scrollTop = CHAT_WINDOW.scrollHeight;
+        }
+        
+        // Función para encontrar el último estado de ánimo registrado
+        function getLastMoodEntry() {
+            const moodData = loadMoodData();
+            let lastEntry = null;
+            let lastDate = new Date(0); // Fecha muy antigua
+
+            for (const dateKey in moodData) {
+                if (moodData.hasOwnProperty(dateKey)) {
+                    // La fecha se guarda en formato YYYY-MM-DD
+                    const entryDate = new Date(dateKey + 'T00:00:00'); // Añadir T00... para evitar problemas de zona horaria
+                    if (entryDate > lastDate) {
+                        lastDate = entryDate;
+                        lastEntry = moodData[dateKey];
+                        lastEntry.date = dateKey;
+                    }
+                }
+            }
+            return lastEntry;
+        }
+
+        // Lógica de bienvenida con integración de diario
+        function sendWelcomeMessage() {
+            const lastEntry = getLastMoodEntry();
+            let welcomeMessage = "";
+
+            if (lastEntry) {
+                const mood = lastEntry.mood;
+                const date = lastEntry.date;
+                const formattedDate = new Date(date).toLocaleDateString('es-ES', { month: 'long', day: 'numeric' });
+                
+                if (mood === 'Excelente' || mood === 'Bien') {
+                    welcomeMessage = `¡Hola! Me alegra que tu último registro del ${formattedDate} haya sido **${mood}** 😊. ¿Quieres contarme si ese buen ánimo continúa hoy?`;
+                } else if (mood === 'Triste' || mood === 'Enojada') {
+                    welcomeMessage = `Hola. Veo que en tu registro del ${formattedDate} te sentías **${mood}** 😥. Quiero que sepas que estoy aquí para ti. ¿Quieres que hablemos sobre cómo estás hoy?`;
+                } else {
+                    // Neutral u otro estado
+                    welcomeMessage = `¡Hola! Tu último registro del ${formattedDate} fue **${mood}**. ¿Ha cambiado algo desde entonces? Estoy lista para escucharte.`;
+                }
+            } else {
+                // Mensaje si no hay historial
+                welcomeMessage = defaultDatabase[0].responses[0]; // Usar el primer saludo por defecto
+            }
+
+            addMessage('ai', welcomeMessage);
+        }
+
+        // Función principal para obtener la respuesta del chatbot (sin cambios mayores)
+        function getResponse(userMessage) {
+            const normalizedMessage = userMessage.toLowerCase().trim();
+            let matchedResponses = [];
+
+            for (const item of chatDatabase) {
+                const triggers = Array.isArray(item.trigger) ? item.trigger : [item.trigger];
+                
+                if (triggers.some(trigger => normalizedMessage.includes(trigger.toLowerCase()))) {
+                    matchedResponses = matchedResponses.concat(item.responses);
+                }
+            }
+
+            if (matchedResponses.length > 0) {
+                const randomIndex = Math.floor(Math.random() * matchedResponses.length);
+                return matchedResponses[randomIndex];
+            }
+
+            const defaultResponses = [
+                "Mmm, no estoy segura de qué preguntar. ¿Podrías contármelo con otras palabras? Estoy aquí para ti.",
+                "¡Uy! No tengo una respuesta lista para eso. ¿Quieres probar con algo más?",
+                "Mi base de datos no tiene ese tema aún. Pero no importa, sigue hablando de lo que necesites.",
+            ];
+            const randomIndex = Math.floor(Math.random() * defaultResponses.length);
+            return defaultResponses[randomIndex];
+        }
+
+        function sendMessage() {
+            const message = USER_INPUT.value.trim();
+            if (!message) return;
+
+            addMessage('user', message);
+            USER_INPUT.value = '';
+
+            setTimeout(() => {
+                const response = getResponse(message);
+                addMessage('ai', response);
+            }, 500);
+        }
+
+        // --- Event Listeners y Administración Q&A (Ligeras modificaciones en mensajes de usuario) ---
+
+        SEND_BUTTON.addEventListener('click', sendMessage);
+        USER_INPUT.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        SAVE_QA_BUTTON.addEventListener('click', () => {
+            const question = NEW_QUESTION.value.trim();
+            const responsesString = NEW_RESPONSES.value.trim();
+
+            if (!question || !responsesString) {
+                addMessage('ai', "¡Ojo! Necesitas una *palabra clave* y al menos una *respuesta* para guardar esto.");
+                return;
+            }
+
+            const responses = responsesString.split(';').map(r => r.trim()).filter(r => r.length > 0);
+            
+            if (responses.length === 0) {
+                addMessage('ai', "¡Ups! No detecté ninguna respuesta válida. Recuerda separarlas con punto y coma (;).");
+                return;
+            }
+
+            let existingItem = chatDatabase.find(item => 
+                Array.isArray(item.trigger) ? item.trigger.includes(question.toLowerCase()) : item.trigger.toLowerCase() === question.toLowerCase()
+            );
+
+            if (existingItem) {
+                if (!Array.isArray(existingItem.trigger)) {
+                    existingItem.trigger = [existingItem.trigger];
+                }
+                if (!existingItem.trigger.includes(question.toLowerCase())) {
+                    existingItem.trigger.push(question.toLowerCase());
+                }
+                existingItem.responses = responses; 
+                addMessage('ai', `¡Genial! Actualicé la respuesta para '${question}'.`);
+            } else {
+                chatDatabase.push({
+                    trigger: [question.toLowerCase()],
+                    responses: responses
+                });
+                addMessage('ai', `¡Lista! Nueva respuesta para '${question}' guardada.`);
+            }
+
+            saveDatabase();
+            NEW_QUESTION.value = '';
+            NEW_RESPONSES.value = '';
+        });
+
+        function renderQaList() {
+            QA_LIST.innerHTML = '';
+            QA_COUNT.textContent = chatDatabase.length;
+
+            const startIndex = Math.max(0, chatDatabase.length - 5);
+            const itemsToShow = chatDatabase.slice(startIndex);
+
+            itemsToShow.forEach((item, relativeIndex) => { 
+                const listItem = document.createElement('li');
+                listItem.className = 'bg-creamy-white p-2 rounded-lg border-l-4 border-pastel-pink flex justify-between items-center text-xs shadow-sm';
+                
+                const triggerText = Array.isArray(item.trigger) ? item.trigger.join(', ') : item.trigger;
+                
+                listItem.innerHTML = `
+                    <span class="truncate pr-2" title="${triggerText} → ${item.responses.join(' / ')}">
+                        <span class="text-soft-mint font-bold">${triggerText}</span>
+                        <span class="text-gray-500"> → ${item.responses.length} Resp.</span>
+                    </span>
+                    <button data-index="${startIndex + relativeIndex}" class="delete-qa text-pastel-pink hover:text-pink-400 p-1 rounded transition duration-200" title="Eliminar">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                `;
+                QA_LIST.appendChild(listItem);
+            });
+
+            document.querySelectorAll('.delete-qa').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const actualIndex = parseInt(e.currentTarget.dataset.index);
+                    
+                    if (actualIndex >= 0 && actualIndex < chatDatabase.length) {
+                        chatDatabase.splice(actualIndex, 1);
+                        saveDatabase();
+                        addMessage('ai', '¡Listo! Esa respuesta ya no me saldrá.');
+                    }
+                });
+            });
+        }
+
+        // --- INICIALIZACIÓN ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDatabase();
+            sendWelcomeMessage(); // Inicia la conversación
+        });
+    </script>
+</body>
+</html>

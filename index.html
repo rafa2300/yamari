@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinguino: Mind Diary</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Variables de Colores Modernos y Vibrantes (Neón/Eléctricos) */
+        :root {
+            --color-principal: #00FFFF; /* Aqua Eléctrico/Cian (Diario) */
+            --color-secundario: #FF00FF; /* Magenta Brillante/Fucsia (Chat/Parca) */
+            --color-acento: #39FF14; /* Verde Neón (Bienestar) */
+            --color-base: #121212; /* Fondo Oscuro */
+            --color-contenedor: #1F1F1F; /* Gris Oscuro para el contenedor */
+            --color-texto: #E0E0E0; /* Texto Gris Claro */
+            --color-texto-hover: #FFFFFF; /* Texto Blanco al pasar el ratón */
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--color-base); /* Fondo Oscuro */
+            color: var(--color-texto);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        /* Renombramos 'container' a 'tool-container' para mantener la consistencia si tienes CSS externo */
+        .tool-container {
+            background-color: var(--color-contenedor);
+            padding: 50px 70px;
+            border-radius: 20px;
+            /* Sombra neón sutil */
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.2), 0 0 15px rgba(0, 0, 0, 0.5);
+            max-width: 450px;
+            width: 90%;
+            border: 2px solid var(--color-principal); /* Borde Aqua Eléctrico */
+        }
+
+        h1 {
+            color: var(--color-principal); /* Aqua Eléctrico */
+            font-size: 3em;
+            margin-bottom: 5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            /* Efecto de 'glitch' o neón sutil */
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.7), 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        h2 {
+            /* Cambio de color a Magenta para el subtítulo, siguiendo el estilo del código que enviaste */
+            color: var(--color-secundario); 
+            font-size: 1.4em;
+            margin-top: 0;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        /* Estilo para la pregunta "¿Qué necesitas hoy?" */
+        .tool-container p:not(.footer-note) {
+            color: var(--color-texto);
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            font-weight: 400;
+        }
+
+        /* Estilos de Botones: Ocupan el 100% de ancho del contenedor */
+        .cta-button {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            margin: 20px 0;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2em;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-texto-hover); /* Texto Blanco */
+        }
+
+        /* Botón para el Diario (Mi Calendario de Ánimo) */
+        .cta-diario {
+            background-color: var(--color-principal); /* Aqua Eléctrico */
+            box-shadow: 0 0 15px var(--color-principal); /* Brillo */
+        }
+
+        .cta-diario:hover {
+            background-color: #00DCDC; 
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 0 25px var(--color-principal), 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Botón para el Chatbot (Hablar con el Doctor) */
+        .cta-chat {
+            background-color: var(--color-secundario); /* Magenta Brillante */
+            box-shadow: 0 0 15px var(--color-secundario); /* Brillo */
+        }
+
+        .cta-chat:hover {
+            background-color: #DD00DD; 
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 0 25px var(--color-secundario), 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Botón para Bienestar */
+        .cta-chat2 {
+            background-color: var(--color-acento); /* Verde Neón */
+            box-shadow: 0 0 15px var(--color-acento);
+            color: var(--color-base); /* Texto oscuro para el fondo claro */
+        }
+
+        .cta-chat2:hover {
+            background-color: #2ED40D; 
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 0 25px var(--color-acento), 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .footer-note {
+            margin-top: 30px;
+            font-size: 0.8em;
+            color: #777;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+    <div class="tool-container">
+        <h1>¡HOLA! BIENVENIDA 💖</h1>
+        <h2>Tu espacio seguro para la salud mental.</h2>
+        
+        <p>¿Qué necesitas hoy?</p>
+        
+        <a href="diario.html" class="cta-button cta-diario">
+            🗓️ MI CALENDARIO DE ÁNIMO
+        </a>
+        
+        <a href="chat.html" class="cta-button cta-chat">
+            💬 HABLAR CON EL DOCTOR
+        </a>
+
+        <a href="bienestar.html" class="cta-button cta-chat2">
+            🛠️ BIENESTAR
+        </a>
+
+        <p class="footer-note">Recuerda: Esta página es un soporte, no un sustituto de la ayuda profesional.</p>
+    </div>
+</body>
+</html>

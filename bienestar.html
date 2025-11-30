@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caja de Herramientas | Yamaari</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style/style.css"> 
+    
+</head>
+<body>
+
+    <a href="index.html" class="back-link">← Volver al inicio de Yamaari</a> 
+
+    <div class="header">
+        <h1>🔨 Caja de Herramientas</h1>
+        <p>Técnicas rápidas para tu bienestar psicológico.</p>
+    </div>
+
+    <div class="tool-container">
+        <h2>✨ Respiración 4-7-8 (Calma Instantánea)</h2>
+        <p>Esta técnica es excelente para reducir la ansiedad y el estrés. Te guiaré por un ciclo:</p>
+        <p style="color: var(--color-acento); font-size: 1.1em; margin-bottom: 30px;">
+            **4s** Inhala 🌬️ | **7s** Sostén 🧘‍♀️ | **8s** Exhala 😮‍💨
+        </p>
+
+        <div id="breathing-area">
+            <div id="breathing-circle"></div>
+            <div id="instruction-text">Pulsa Iniciar</div>
+            <div id="timer-text"></div>
+        </div>
+        
+        <button id="start-button">Iniciar Ciclo</button>
+        <button id="stop-button" style="display:none;">Detener</button>
+    </div>
+
+    <div class="tool-container">
+        <h2>🧠 Anclaje 5-4-3-2-1 (Grounding)</h2>
+        <p>Cuando te sientas abrumado o ansioso, usa tus sentidos para volver al presente:</p>
+
+        <p class="grounding-step">5️⃣ Nombra 5 cosas que puedas **VER**.</p>
+        <p class="grounding-step">4️⃣ Nombra 4 cosas que puedas **TOCAR**.</p>
+        <p class="grounding-step">3️⃣ Nombra 3 cosas que puedas **OÍR**.</p>
+        <p class="grounding-step">2️⃣ Nombra 2 cosas que puedas **OLER**.</p>
+        <p class="grounding-step">1️⃣ Nombra 1 cosa que puedas **SABOREAR**.</p>
+        
+        <button class="tool-button" style="background-color: var(--color-secundario); box-shadow: 0 0 10px var(--color-secundario);">
+            Entendido, ¡A Empezar!
+        </button>
+    </div>
+
+    <div class="tool-container">
+        <h2>💖 Gratitud Rápida</h2>
+        <p>Toma un momento para enfocar tu energía en lo positivo. ¿Qué agradeces hoy?</p>
+        
+        <div class="text-area-group">
+            <label for="gratitude-entry">Escribe tus motivos de gratitud:</label>
+            <textarea id="gratitude-entry" placeholder="1. Hoy agradezco...&#10;2. También agradezco...&#10;3. Y por último, agradezco..." rows="4"></textarea>
+            
+            <button class="tool-button" style="background-color: var(--color-acento); color: var(--color-base); box-shadow: 0 0 10px var(--color-acento);">
+                Guardar Reflexión
+            </button>
+        </div>
+    </div>
+    
+    <div class="tool-container">
+        <h2>📝 Diario de Pensamientos (TCC)</h2>
+        <p>Identifica un pensamiento que te cause malestar y desafíalo para cambiar tu perspectiva.</p>
+        
+        <div class="text-area-group">
+            <label for="thought-entry">¿Cuál es el pensamiento negativo (automático) que tuviste?</label>
+            <textarea id="thought-entry" placeholder="Ej: 'Todo me sale mal'"></textarea>
+            
+            <label for="evidence-entry">¿Qué evidencia tienes **a favor** de ese pensamiento?</label>
+            <textarea id="evidence-entry" placeholder="Sé honesto..."></textarea>
+            
+            <label for="alternative-entry">¿Qué evidencia tienes **en contra** o cuál es un pensamiento alternativo más realista?</label>
+            <textarea id="alternative-entry" placeholder="Ej: 'Me salió mal esto, pero logré esto otro...'"></textarea>
+            
+            <button class="tool-button" style="background-color: var(--color-principal); color: var(--color-base); box-shadow: 0 0 10px var(--color-principal);">
+                Analizar y Finalizar
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // --- CÓDIGO DE LA GUÍA DE RESPIRACIÓN (Se mantiene el JavaScript aquí) ---
+        const CIRCLE = document.getElementById('breathing-circle');
+        const INSTRUCTION_TEXT = document.getElementById('instruction-text');
+        const TIMER_TEXT = document.getElementById('timer-text');
+        const START_BUTTON = document.getElementById('start-button');
+        const STOP_BUTTON = document.getElementById('stop-button');
+        
+        let intervalId = null;
+        let isRunning = false;
+        
+        const DURATION = {
+            inhale: 4000,
+            hold: 7000,
+            exhale: 8000
+        };
+        const CYCLE_TIME = DURATION.inhale + DURATION.hold + DURATION.exhale;
+
+        function updateTimerDisplay(duration) {
+            let seconds = Math.floor(duration / 1000);
+            TIMER_TEXT.textContent = `Tiempo restante: ${seconds}s`;
+            
+            const timerInterval = setInterval(() => {
+                seconds--;
+                if (seconds >= 0) {
+                    TIMER_TEXT.textContent = `Tiempo restante: ${seconds}s`;
+                } else {
+                    clearInterval(timerInterval);
+                }
+            }, 1000);
+            return timerInterval;
+        }
+
+        function startBreathingCycle() {
+            if (isRunning) return;
+            isRunning = true;
+            START_BUTTON.disabled = true;
+            START_BUTTON.style.display = 'none';
+            STOP_BUTTON.style.display = 'inline-block';
+            
+            breatheStep();
+            intervalId = setInterval(breatheStep, CYCLE_TIME);
+        }
+
+        function breatheStep() {
+            let timerInterval;
+
+            // 1. INHALAR (4s)
+            INSTRUCTION_TEXT.textContent = "Inhala...";
+            CIRCLE.className = '';
+            CIRCLE.classList.add('inhale');
+            clearInterval(timerInterval);
+            timerInterval = updateTimerDisplay(DURATION.inhale);
+
+
+            // 2. SOSTENER (7s)
+            setTimeout(() => {
+                INSTRUCTION_TEXT.textContent = "Sostén";
+                CIRCLE.classList.remove('inhale');
+                CIRCLE.classList.add('hold');
+                
+                clearInterval(timerInterval);
+                timerInterval = updateTimerDisplay(DURATION.hold);
+
+            }, DURATION.inhale);
+
+
+            // 3. EXHALAR (8s)
+            setTimeout(() => {
+                INSTRUCTION_TEXT.textContent = "Exhala...";
+                CIRCLE.classList.remove('hold');
+                CIRCLE.classList.add('exhale');
+                
+                clearInterval(timerInterval);
+                timerInterval = updateTimerDisplay(DURATION.exhale);
+
+            }, DURATION.inhale + DURATION.hold);
+            
+            // Opcional: Mostrar mensaje de "Prepara" al final del ciclo
+            setTimeout(() => {
+                INSTRUCTION_TEXT.textContent = "Prepara...";
+                TIMER_TEXT.textContent = "";
+                CIRCLE.classList.remove('exhale');
+                CIRCLE.style.transitionDuration = '0s';
+                CIRCLE.style.backgroundColor = 'var(--color-secundario)';
+                
+                setTimeout(() => {
+                    CIRCLE.style.transitionDuration = '4s';
+                }, 100);
+            }, CYCLE_TIME - 1000); 
+        }
+
+        function stopBreathing() {
+            clearInterval(intervalId);
+            intervalId = null;
+            isRunning = false;
+            
+            CIRCLE.className = '';
+            CIRCLE.style.transform = 'scale(1)';
+            CIRCLE.style.backgroundColor = 'var(--color-secundario)';
+            INSTRUCTION_TEXT.textContent = "Ciclo Detenido";
+            TIMER_TEXT.textContent = "Pulsa Iniciar para continuar.";
+            
+            START_BUTTON.disabled = false;
+            START_BUTTON.style.display = 'inline-block';
+            STOP_BUTTON.style.display = 'none';
+        }
+
+        START_BUTTON.addEventListener('click', startBreathingCycle);
+        STOP_BUTTON.addEventListener('click', stopBreathing);
+
+        document.addEventListener('DOMContentLoaded', () => {
+             // Asegurarse de que las transiciones estén activas
+             CIRCLE.style.transition = 'all 4s linear'; 
+        });
+    </script>
+</body>
+</html>
